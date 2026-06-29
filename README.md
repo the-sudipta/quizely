@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/brand/quizely-logo.png" alt="Quizely logo" width="360">
+</p>
+
 # Quizely
 
 Quizely is a lifetime interactive quiz generator for students, teachers, and self-learners. It turns a simple CSV file into a polished browser-based practice quiz with instant scoring, review feedback, and unlimited retry attempts.
@@ -48,8 +52,15 @@ See [examples/quizely_template.csv](examples/quizely_template.csv) for a ready-t
 |-- CONTRIBUTING.md
 |-- SECURITY.md
 |-- CODE_OF_CONDUCT.md
+|-- site.webmanifest
 |-- .gitignore
 |-- .nojekyll
+|-- assets/
+|   `-- brand/
+|       |-- quizely-logo.png
+|       |-- quizely-icon.png
+|       |-- quizely-og.png
+|       `-- favicon.ico
 |-- docs/
 |   `-- PROJECT_DETAILS.md
 `-- examples/

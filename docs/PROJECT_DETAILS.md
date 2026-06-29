@@ -3,6 +3,11 @@
 ## 1. Executive Summary & Vision
 The **Lifetime Interactive Quiz Generator** is an open-source, zero-overhead educational tool designed to empower students and educators to generate interactive practice exams instantly. 
 
+### Brand Identity:
+* **Name:** Quizely.
+* **Logo Direction:** A gender-neutral open-book mark with a central check mark and a warm learning spark, designed to feel polished, student-friendly, and trustworthy.
+* **Brand Assets:** Web-ready logo and icon files live in `assets/brand/`.
+
 ### Core Philosophy:
 * **Zero Cost & High Accessibility:** Built strictly as a single-file application (`.html`) requiring no backend servers, API keys, or databases. It can be hosted entirely for free on static hosting platforms (e.g., GitHub Pages) or run completely offline.
 * **Privacy by Design:** All data processing happens entirely inside the user's browser via client-side JavaScript (`FileReader` API). Quiz questions never leave the user's local machine.

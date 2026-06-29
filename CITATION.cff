@@ -6,6 +6,7 @@ authors:
   - family-names: "Sudipta"
 repository-code: "https://github.com/the-sudipta/quizely"
 url: "https://github.com/the-sudipta/quizely"
+image: "https://raw.githubusercontent.com/the-sudipta/quizely/main/assets/brand/quizely-logo.png"
 abstract: "A privacy-first, single-file interactive quiz generator that turns CSV files into repeatable browser-based practice exams."
 keywords:
   - quiz-generator
