@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizely | Lifetime Practice Quiz Generator</title>
+    <style>
+        :root {
+            --ink: #172033;
+            --muted: #667085;
+            --soft: #f6f8fc;
+            --panel: #ffffff;
+            --panel-strong: #fdfefe;
+            --line: #dde5f0;
+            --brand: #5b5ce2;
+            --brand-strong: #4140b8;
+            --brand-soft: #eceeff;
+            --mint: #13a67a;
+            --mint-soft: #e6f8f1;
+            --rose: #df3f5f;
+            --rose-soft: #fff0f3;
+            --sun: #f0a52b;
+            --sky: #1f8ac0;
+            --shadow: 0 20px 45px rgba(32, 45, 73, 0.12);
+            --shadow-soft: 0 12px 28px rgba(32, 45, 73, 0.08);
+            --radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(31, 138, 192, 0.18), transparent 34rem),
+                linear-gradient(135deg, #fbfcff 0%, #eef2fb 55%, #f7fbf8 100%);
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            border: 0;
+        }
+
+        .app-shell {
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 28px 0 42px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+            align-items: center;
+            gap: 26px;
+            min-height: min(610px, calc(100vh - 56px));
+            padding: 30px 0 22px;
+        }
+
+        .brand-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 22px;
+            color: var(--brand-strong);
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: var(--radius);
+            background: var(--ink);
+            color: #ffffff;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .brand-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        h1 {
+            max-width: 760px;
+            margin: 0;
+            font-size: clamp(2.75rem, 7vw, 5.8rem);
+            line-height: 0.96;
+            letter-spacing: 0;
+        }
+
+        .hero-copy {
+            max-width: 660px;
+            margin: 22px 0 0;
+            color: #455066;
+            font-size: 1.1rem;
+            line-height: 1.75;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .button {
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 18px;
+            border-radius: var(--radius);
+            background: var(--brand);
+            color: #ffffff;
+            cursor: pointer;
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 10px 22px rgba(91, 92, 226, 0.26);
+            transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+        }
+
+        .button:hover {
+            background: var(--brand-strong);
+            transform: translateY(-1px);
+            box-shadow: 0 14px 26px rgba(91, 92, 226, 0.3);
+        }
+
+        .button:active {
+            transform: translateY(1px) scale(0.99);
+        }
+
+        .button.secondary {
+            background: #ffffff;
+            color: var(--ink);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .button.secondary:hover {
+            background: #f8fbff;
+        }
+
+        .button.success {
+            background: var(--mint);
+            box-shadow: 0 10px 22px rgba(19, 166, 122, 0.22);
+        }
+
+        .button.danger {
+            background: #394156;
+            box-shadow: 0 10px 22px rgba(57, 65, 86, 0.2);
+        }
+
+        .button svg,
+        .icon-button svg,
+        .mini-icon svg {
+            width: 19px;
+            height: 19px;
+            flex: 0 0 auto;
+        }
+
+        .hero-panel {
+            background: rgba(255, 255, 255, 0.86);
+            border: 1px solid rgba(221, 229, 240, 0.85);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            backdrop-filter: blur(16px);
+        }
+
+        .panel-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px;
+            border-bottom: 1px solid var(--line);
+            background: linear-gradient(90deg, #ffffff, #f7f9ff);
+        }
+
+        .mini-dots {
+            display: flex;
+            gap: 7px;
+        }
+
+        .mini-dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--rose);
+        }
+
+        .mini-dots span:nth-child(2) {
+            background: var(--sun);
+        }
+
+        .mini-dots span:nth-child(3) {
+            background: var(--mint);
+        }
+
+        .panel-title {
+            color: var(--muted);
+            font-size: 0.84rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .setup-zone {
+            padding: 22px;
+        }
+
+        .setup-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .setup-card {
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: var(--panel-strong);
+        }
+
+        .setup-card h2,
+        .setup-card h3 {
+            margin: 0 0 8px;
+            font-size: 1.05rem;
+        }
+
+        .setup-card p {
+            margin: 0 0 16px;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        .file-drop {
+            position: relative;
+            min-height: 132px;
+            display: grid;
+            place-items: center;
+            gap: 10px;
+            padding: 18px;
+            border: 2px dashed #b9c6dc;
+            border-radius: var(--radius);
+            background: #f8fbff;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+        }
+
+        .file-drop:hover,
+        .file-drop.dragging {
+            border-color: var(--brand);
+            background: var(--brand-soft);
+            transform: translateY(-1px);
+        }
+
+        .file-drop input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-drop strong {
+            display: block;
+            margin-top: 2px;
+        }
+
+        .file-name {
+            color: var(--brand-strong);
+            font-weight: 800;
+            word-break: break-word;
+        }
+
+        .tiny-note {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.45;
+        }
+
+        .stats-strip {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .stat-pill {
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: #ffffff;
+        }
+
+        .stat-pill span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        .stat-pill strong {
+            display: block;
+            margin-top: 6px;
+            font-size: 1.4rem;
+        }
+
+        .quiz-stage {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 300px;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .quiz-main,
+        .study-desk {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .quiz-header {
+            position: sticky;
+            top: 0;
+            z-index: 3;
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(14px);
+        }
+
+        .quiz-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 12px;
+        }
+
+        .quiz-title {
+            min-width: 0;
+        }
+
+        .quiz-title strong {
+            display: block;
+            font-size: 1.08rem;
+        }
+
+        .quiz-title span {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            overflow-wrap: anywhere;
+        }
+
+        .progress-track {
+            height: 10px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #e8edf6;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--brand), var(--mint));
+            transition: width 220ms ease;
+        }
+
+        .quiz-container {
+            padding: 18px;
+        }
+
+        .quiz-question {
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: #ffffff;
+            transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+        }
+
+        .quiz-question:focus-within {
+            border-color: rgba(91, 92, 226, 0.5);
+            box-shadow: 0 10px 24px rgba(91, 92, 226, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .question-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: var(--brand-strong);
+            font-size: 0.8rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        .question-text {
+            margin: 0 0 16px;
+            color: #111827;
+            font-size: 1.07rem;
+            font-weight: 750;
+            line-height: 1.58;
+            overflow-wrap: anywhere;
+        }
+
+        .options-group {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option-label {
+            position: relative;
+            min-height: 58px;
+            display: grid;
+            grid-template-columns: 42px 1fr;
+            align-items: start;
+            gap: 12px;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: #fbfdff;
+            cursor: pointer;
+            line-height: 1.45;
+            transition: background 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+        }
+
+        .option-label:hover {
+            border-color: #b9c6dc;
+            background: #f7faff;
+            transform: translateX(2px);
+        }
+
+        .option-label input {
+            position: absolute;
+            inline-size: 1px;
+            block-size: 1px;
+            opacity: 0;
+        }
+
+        .option-letter {
+            width: 38px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border-radius: var(--radius);
+            background: #edf2fb;
+            color: var(--brand-strong);
+            font-weight: 900;
+        }
+
+        .option-copy {
+            min-width: 0;
+            padding-top: 5px;
+            overflow-wrap: anywhere;
+        }
+
+        .option-label:has(input:checked) {
+            border-color: var(--brand);
+            background: var(--brand-soft);
+            box-shadow: 0 8px 18px rgba(91, 92, 226, 0.12);
+        }
+
+        .option-label:has(input:checked) .option-letter {
+            background: var(--brand);
+            color: #ffffff;
+        }
+
+        .option-label.correct {
+            border-color: rgba(19, 166, 122, 0.65);
+            background: var(--mint-soft);
+            color: #075f48;
+        }
+
+        .option-label.correct .option-letter {
+            background: var(--mint);
+            color: #ffffff;
+        }
+
+        .option-label.incorrect {
+            border-color: rgba(223, 63, 95, 0.7);
+            background: var(--rose-soft);
+            color: #8e1830;
+        }
+
+        .option-label.incorrect .option-letter {
+            background: var(--rose);
+            color: #ffffff;
+        }
+
+        .quiz-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            padding: 0 18px 22px;
+        }
+
+        .study-desk {
+            position: sticky;
+            top: 18px;
+            overflow: hidden;
+        }
+
+        .desk-section {
+            padding: 18px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .desk-section:last-child {
+            border-bottom: 0;
+        }
+
+        .desk-section h2 {
+            margin: 0 0 8px;
+            font-size: 1rem;
+        }
+
+        .desk-section p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .focus-meter {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin-top: 14px;
+        }
+
+        .focus-meter span {
+            height: 28px;
+            border-radius: var(--radius);
+            background: #edf2fb;
+            transition: background 180ms ease, transform 180ms ease;
+        }
+
+        .focus-meter span.active {
+            background: var(--mint);
+            transform: translateY(-2px);
+        }
+
+        .score-card {
+            display: none;
+            padding: 18px;
+            margin: 0 18px 18px;
+            border: 1px solid #cfd8ff;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, #f8f9ff, #effaf5);
+        }
+
+        .score-card.is-visible {
+            display: block;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .score-tile {
+            padding: 14px;
+            border-radius: var(--radius);
+            background: #ffffff;
+            border: 1px solid var(--line);
+        }
+
+        .score-tile span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        .score-tile strong {
+            display: block;
+            margin-top: 8px;
+            font-size: 1.7rem;
+        }
+
+        .score-message {
+            margin: 14px 0 0;
+            color: #364158;
+            line-height: 1.6;
+            font-weight: 650;
+        }
+
+        .answer-map {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 7px;
+            margin-top: 14px;
+        }
+
+        .answer-dot {
+            min-height: 34px;
+            display: grid;
+            place-items: center;
+            border-radius: var(--radius);
+            background: #edf2fb;
+            color: var(--muted);
+            font-size: 0.82rem;
+            font-weight: 900;
+        }
+
+        .answer-dot.correct {
+            background: var(--mint-soft);
+            color: #087052;
+        }
+
+        .answer-dot.incorrect {
+            background: var(--rose-soft);
+            color: #a31f3a;
+        }
+
+        .answer-dot.unanswered {
+            background: #fff7e8;
+            color: #9a6412;
+        }
+
+        .toast {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 10;
+            max-width: min(360px, calc(100vw - 36px));
+            padding: 14px 16px;
+            border-radius: var(--radius);
+            background: #172033;
+            color: #ffffff;
+            box-shadow: var(--shadow);
+            transform: translateY(18px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 180ms ease, transform 180ms ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 920px) {
+            .hero,
+            .quiz-stage {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                min-height: auto;
+            }
+
+            .study-desk {
+                position: static;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .app-shell {
+                width: min(100% - 20px, 1180px);
+                padding-top: 12px;
+            }
+
+            .hero {
+                padding-top: 18px;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+
+            .hero-copy {
+                font-size: 1rem;
+            }
+
+            .hero-actions,
+            .quiz-actions {
+                flex-direction: column;
+            }
+
+            .button {
+                width: 100%;
+            }
+
+            .stats-strip,
+            .score-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quiz-question,
+            .quiz-container,
+            .setup-zone {
+                padding: 14px;
+            }
+
+            .option-label {
+                grid-template-columns: 36px 1fr;
+            }
+
+            .option-letter {
+                width: 34px;
+                height: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="app-shell">
+        <section class="hero" id="setup-view">
+            <div>
+                <div class="brand-mark">
+                    <span class="brand-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 4.75h7.25a3 3 0 0 1 3 3V19L14 17.15l-3.25 1.85L7.5 17.15 4.25 19V7.5A2.75 2.75 0 0 1 7 4.75Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                            <path d="M8 9h5.5M8 12.5h7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    <span>Quizely</span>
+                </div>
+                <h1>Practice until it finally clicks.</h1>
+                <p class="hero-copy">Turn a simple CSV into a lively study room in your browser. No login, no server, no data leaving your laptop. Upload once, answer, review, and retry the same quiz as many times as you want.</p>
+                <div class="hero-actions">
+                    <button class="button" type="button" onclick="downloadTemplate()" aria-label="Download CSV template">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Template
+                    </button>
+                    <a class="button secondary" href="#upload-card">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M12 5v14m7-7H5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Add Quiz
+                    </a>
+                </div>
+            </div>
+
+            <aside class="hero-panel" aria-label="Quiz setup">
+                <div class="panel-top">
+                    <div class="mini-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+                    <div class="panel-title">Offline study mode</div>
+                </div>
+                <div class="setup-zone">
+                    <div class="setup-grid">
+                        <div class="setup-card">
+                            <h2>Start with the template</h2>
+                            <p>Use the exact column layout, then fill it with your own questions from class notes, books, or exam prep sheets.</p>
+                            <button class="button secondary" type="button" onclick="downloadTemplate()">
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M8 17h8M8 13h8M10 3h5l4 4v14H5V3h5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Download CSV
+                            </button>
+                        </div>
+
+                        <div class="setup-card" id="upload-card">
+                            <h3>Upload your quiz file</h3>
+                            <p>Choose a CSV and Quizely will build the practice set right here on this page.</p>
+                            <label class="file-drop" id="file-drop">
+                                <input type="file" id="csv-file" accept=".csv,text/csv">
+                                <span class="mini-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M12 15V4m0 0 4 4m-4-4-4 4M5 16v3h14v-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                                <span>
+                                    <strong>Drop CSV here or browse</strong>
+                                    <span class="tiny-note" id="file-helper">Your questions stay inside this browser.</span>
+                                </span>
+                            </label>
+                            <div style="height: 12px;"></div>
+                            <button class="button success" type="button" onclick="handleFileUpload()">
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="m8 5 11 7-11 7V5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                                </svg>
+                                Build Quiz
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="stats-strip" aria-label="App benefits">
+                        <div class="stat-pill"><span>Cost</span><strong>Free</strong></div>
+                        <div class="stat-pill"><span>Privacy</span><strong>Local</strong></div>
+                        <div class="stat-pill"><span>Retries</span><strong>Unlimited</strong></div>
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+        <section class="quiz-stage hidden" id="quiz-view" aria-live="polite">
+            <form class="quiz-main" id="quiz-form">
+                <header class="quiz-header">
+                    <div class="quiz-meta-row">
+                        <div class="quiz-title">
+                            <strong id="active-title">Practice Quiz</strong>
+                            <span id="active-subtitle">0 questions loaded</span>
+                        </div>
+                        <button class="button secondary" type="button" onclick="showSetupForNewFile()" aria-label="Upload a new quiz">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 7h16M8 7V5h8v2m-9 4 1 8h8l1-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            New File
+                        </button>
+                    </div>
+                    <div class="progress-track" aria-label="Answered progress">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </header>
+
+                <div class="quiz-container" id="quiz-container"></div>
+
+                <section class="score-card" id="result-box" aria-live="polite"></section>
+
+                <div class="quiz-actions">
+                    <button type="submit" id="submit-btn" class="button">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Check Answers
+                    </button>
+                    <button type="button" id="practice-again-btn" class="button success hidden" onclick="practiceAgain()">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M20 12a8 8 0 1 1-2.35-5.65M20 4v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Practice Again
+                    </button>
+                    <button type="button" class="button secondary" onclick="scrollToFirstUnanswered()" id="find-unanswered-btn">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="m21 21-4.3-4.3M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Find Blank
+                    </button>
+                </div>
+            </form>
+
+            <aside class="study-desk" aria-label="Study dashboard">
+                <div class="desk-section">
+                    <h2>Study desk</h2>
+                    <p id="desk-message">Answer questions at your pace. The meter fills as you make choices.</p>
+                    <div class="focus-meter" id="focus-meter" aria-hidden="true">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                </div>
+                <div class="desk-section">
+                    <h2>Session</h2>
+                    <div class="stats-strip" style="grid-template-columns: 1fr;">
+                        <div class="stat-pill"><span>Attempt</span><strong id="attempt-count">1</strong></div>
+                        <div class="stat-pill"><span>Answered</span><strong id="answered-count">0/0</strong></div>
+                    </div>
+                </div>
+                <div class="desk-section">
+                    <h2>Answer map</h2>
+                    <p>After checking, use this to spot what needs another pass.</p>
+                    <div class="answer-map" id="answer-map"></div>
+                </div>
+            </aside>
+        </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+        let quizData = [];
+        let activeFileName = '';
+        let attemptNumber = 1;
+        let reviewMode = false;
+
+        const fileInput = document.getElementById('csv-file');
+        const fileDrop = document.getElementById('file-drop');
+        const fileHelper = document.getElementById('file-helper');
+        const quizForm = document.getElementById('quiz-form');
+
+        const iconCheck = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        const iconX = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+        const iconDot = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 8v4m0 4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+
+        function escapeHTML(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function parseCSV(text) {
+            const rows = [];
+            let row = [];
+            let field = '';
+            let insideQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const next = text[i + 1];
+
+                if (char === '"') {
+                    if (insideQuotes && next === '"') {
+                        field += '"';
+                        i++;
+                    } else {
+                        insideQuotes = !insideQuotes;
+                    }
+                } else if (char === ',' && !insideQuotes) {
+                    row.push(field.trim());
+                    field = '';
+                } else if ((char === '\n' || char === '\r') && !insideQuotes) {
+                    if (char === '\r' && next === '\n') {
+                        i++;
+                    }
+                    row.push(field.trim());
+                    if (row.some(cell => cell.length > 0)) {
+                        rows.push(row);
+                    }
+                    row = [];
+                    field = '';
+                } else {
+                    field += char;
+                }
+            }
+
+            row.push(field.trim());
+            if (row.some(cell => cell.length > 0)) {
+                rows.push(row);
+            }
+
+            return rows;
+        }
+
+        function normalizeAnswer(answer) {
+            return String(answer || '').trim().charAt(0).toUpperCase();
+        }
+
+        function downloadTemplate() {
+            const rows = [
+                ['Question', 'Option A', 'Option B', 'Option C', 'Option D', 'Correct Answer (A/B/C/D)'],
+                ['Which study habit usually improves long-term memory?', 'Cramming all night', 'Spaced repetition', 'Skipping review', 'Reading once quickly', 'B'],
+                ['If a quoted CSV question contains a comma, what should you do?', 'Remove the comma', 'Wrap the whole cell in double quotes', 'Split it into two rows', 'Leave the answer blank', 'B']
+            ];
+            const csv = rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'quizely_template.csv';
+            document.body.appendChild(link);
+            link.click();
+            URL.revokeObjectURL(link.href);
+            link.remove();
+            showToast('Template downloaded. Fill it in, then upload it here.');
+        }
+
+        function handleFileUpload() {
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showToast('Choose a CSV file first.');
+                return;
+            }
+
+            activeFileName = file.name;
+            const reader = new FileReader();
+            reader.onload = event => parseCSVText(event.target.result);
+            reader.onerror = () => showToast('The file could not be read. Try exporting it again as CSV.');
+            reader.readAsText(file);
+        }
+
+        function parseCSVText(text) {
+            const rows = parseCSV(text);
+            const parsed = [];
+            let invalidMessage = '';
+
+            rows.slice(1).forEach((columns, index) => {
+                if (invalidMessage) {
+                    return;
+                }
+
+                if (columns.length < 6 || columns.every(cell => !cell.trim())) {
+                    return;
+                }
+
+                const correct = normalizeAnswer(columns[5]);
+                if (!['A', 'B', 'C', 'D'].includes(correct)) {
+                    invalidMessage = `Row ${index + 2}: Correct answer must be A, B, C, or D.`;
+                    return;
+                }
+
+                parsed.push({
+                    question: columns[0],
+                    options: {
+                        A: columns[1],
+                        B: columns[2],
+                        C: columns[3],
+                        D: columns[4]
+                    },
+                    correct
+                });
+            });
+
+            if (invalidMessage) {
+                quizData = [];
+                showToast(invalidMessage);
+                return;
+            }
+
+            if (!parsed.length) {
+                showToast('No quiz questions were found. Check that your file matches the template.');
+                return;
+            }
+
+            quizData = parsed;
+            attemptNumber = 1;
+            renderQuiz();
+        }
+
+        function renderQuiz() {
+            reviewMode = false;
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const questionNode = document.createElement('section');
+                questionNode.className = 'quiz-question';
+                questionNode.id = `question-${index + 1}`;
+                questionNode.dataset.correct = question.correct;
+
+                questionNode.innerHTML = `
+                    <div class="question-kicker">Question ${index + 1}</div>
+                    <h2 class="question-text">${escapeHTML(question.question)}</h2>
+                    <div class="options-group">
+                        ${['A', 'B', 'C', 'D'].map(letter => `
+                            <label class="option-label">
+                                <input type="radio" name="q${index}" value="${letter}">
+                                <span class="option-letter">${letter}</span>
+                                <span class="option-copy">${escapeHTML(question.options[letter])}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionNode);
+            });
+
+            document.getElementById('setup-view').classList.add('hidden');
+            document.getElementById('quiz-view').classList.remove('hidden');
+            document.getElementById('result-box').classList.remove('is-visible');
+            document.getElementById('submit-btn').classList.remove('hidden');
+            document.getElementById('find-unanswered-btn').classList.remove('hidden');
+            document.getElementById('practice-again-btn').classList.add('hidden');
+            document.getElementById('active-title').textContent = 'Practice Quiz';
+            document.getElementById('active-subtitle').textContent = `${quizData.length} questions from ${activeFileName || 'your CSV'}`;
+            document.getElementById('attempt-count').textContent = attemptNumber;
+            document.getElementById('desk-message').textContent = 'Answer questions at your pace. The meter fills as you make choices.';
+            buildAnswerMap();
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function buildAnswerMap(results) {
+            const map = document.getElementById('answer-map');
+            map.innerHTML = '';
+            quizData.forEach((_, index) => {
+                const dot = document.createElement('button');
+                dot.type = 'button';
+                dot.className = 'answer-dot';
+                dot.textContent = index + 1;
+                dot.setAttribute('aria-label', `Go to question ${index + 1}`);
+                if (results && results[index]) {
+                    dot.classList.add(results[index]);
+                }
+                dot.addEventListener('click', () => {
+                    document.getElementById(`question-${index + 1}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+                map.appendChild(dot);
+            });
+        }
+
+        function updateProgress() {
+            const answered = quizData.filter((_, index) => document.querySelector(`input[name="q${index}"]:checked`)).length;
+            const percent = quizData.length ? Math.round((answered / quizData.length) * 100) : 0;
+            document.getElementById('progress-fill').style.width = `${percent}%`;
+            document.getElementById('answered-count').textContent = `${answered}/${quizData.length}`;
+
+            document.querySelectorAll('#focus-meter span').forEach((bar, index) => {
+                bar.classList.toggle('active', index < Math.ceil(percent / 20));
+            });
+        }
+
+        function evaluateQuiz(event) {
+            event.preventDefault();
+            if (reviewMode) {
+                return;
+            }
+
+            let score = 0;
+            const resultStates = [];
+
+            quizData.forEach((question, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                const questionNode = document.getElementById(`question-${index + 1}`);
+                const labels = questionNode.querySelectorAll('.option-label');
+
+                labels.forEach(label => {
+                    const input = label.querySelector('input');
+                    label.classList.remove('correct', 'incorrect');
+                    input.disabled = true;
+
+                    if (input.value === question.correct) {
+                        label.classList.add('correct');
+                    }
+                });
+
+                if (!selected) {
+                    resultStates.push('unanswered');
+                    return;
+                }
+
+                if (selected.value === question.correct) {
+                    score++;
+                    resultStates.push('correct');
+                } else {
+                    selected.closest('.option-label').classList.add('incorrect');
+                    resultStates.push('incorrect');
+                }
+            });
+
+            reviewMode = true;
+            showResults(score, resultStates);
+        }
+
+        function showResults(score, resultStates) {
+            const total = quizData.length;
+            const missed = total - score;
+            const percentage = Math.round((score / total) * 100);
+            const resultBox = document.getElementById('result-box');
+            const message = getResultMessage(percentage, missed);
+
+            resultBox.innerHTML = `
+                <div class="score-grid">
+                    <div class="score-tile"><span>Score</span><strong>${score}/${total}</strong></div>
+                    <div class="score-tile"><span>Accuracy</span><strong>${percentage}%</strong></div>
+                    <div class="score-tile"><span>Review</span><strong>${missed}</strong></div>
+                </div>
+                <p class="score-message">${message}</p>
+            `;
+            resultBox.classList.add('is-visible');
+
+            document.getElementById('submit-btn').classList.add('hidden');
+            document.getElementById('find-unanswered-btn').classList.add('hidden');
+            document.getElementById('practice-again-btn').classList.remove('hidden');
+            document.getElementById('desk-message').textContent = 'Review the color marks, then restart this same quiz when you are ready.';
+            buildAnswerMap(resultStates);
+            resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function getResultMessage(percentage, missed) {
+            if (percentage === 100) {
+                return `${iconCheck} Perfect pass. Run it again later to lock it into long-term memory.`;
+            }
+            if (percentage >= 80) {
+                return `${iconCheck} Strong work. Retry once and focus on the ${missed} question${missed === 1 ? '' : 's'} that slipped.`;
+            }
+            if (percentage >= 50) {
+                return `${iconDot} You have a good base. Review the highlighted answers and take another round.`;
+            }
+            return `${iconX} This is exactly what practice mode is for. Start again and watch the score climb.`;
+        }
+
+        function practiceAgain() {
+            attemptNumber++;
+            quizForm.reset();
+            renderQuiz();
+            showToast('Same quiz, fresh attempt. Go get it.');
+        }
+
+        function showSetupForNewFile() {
+            quizData = [];
+            activeFileName = '';
+            attemptNumber = 1;
+            reviewMode = false;
+            quizForm.reset();
+            fileInput.value = '';
+            fileHelper.textContent = 'Your questions stay inside this browser.';
+            fileHelper.classList.remove('file-name');
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('setup-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function scrollToFirstUnanswered() {
+            const firstBlankIndex = quizData.findIndex((_, index) => !document.querySelector(`input[name="q${index}"]:checked`));
+            if (firstBlankIndex === -1) {
+                showToast('Every question has an answer.');
+                return;
+            }
+            document.getElementById(`question-${firstBlankIndex + 1}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(showToast.timer);
+            showToast.timer = setTimeout(() => toast.classList.remove('show'), 2800);
+        }
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (file) {
+                fileHelper.textContent = file.name;
+                fileHelper.classList.add('file-name');
+            }
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            fileDrop.addEventListener(eventName, event => {
+                event.preventDefault();
+                fileDrop.classList.add('dragging');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            fileDrop.addEventListener(eventName, event => {
+                event.preventDefault();
+                fileDrop.classList.remove('dragging');
+            });
+        });
+
+        fileDrop.addEventListener('drop', event => {
+            const file = event.dataTransfer.files[0];
+            if (!file) {
+                return;
+            }
+            const transfer = new DataTransfer();
+            transfer.items.add(file);
+            fileInput.files = transfer.files;
+            fileInput.dispatchEvent(new Event('change'));
+        });
+
+        quizForm.addEventListener('change', updateProgress);
+        quizForm.addEventListener('submit', evaluateQuiz);
+    </script>
+</body>
+</html>

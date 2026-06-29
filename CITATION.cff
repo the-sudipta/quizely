@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If Quizely helps your study, teaching, or research workflow, please cite it."
+title: "Quizely: Lifetime Interactive Quiz Generator"
+type: software
+authors:
+  - family-names: "Sudipta"
+repository-code: "https://github.com/the-sudipta/quizely"
+url: "https://github.com/the-sudipta/quizely"
+abstract: "A privacy-first, single-file interactive quiz generator that turns CSV files into repeatable browser-based practice exams."
+keywords:
+  - quiz-generator
+  - education
+  - students
+  - csv
+  - offline-first
+  - static-site
+  - github-pages
+license: MIT
+date-released: "2026-06-29"
